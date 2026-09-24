@@ -22,4 +22,6 @@ public interface UserService {
     <T extends BaseUpdateUserRequest> UserResponse updateUser(String username, T request);
 
     User processGoogleUser(OAuth2User oauth2User);
+
+    User getCurrentUser();
 }

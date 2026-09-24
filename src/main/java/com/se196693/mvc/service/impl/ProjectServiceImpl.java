@@ -34,10 +34,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public ProjectResponse createProject(ProjectCreateRequest request) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = auth.getName();
 
-        User currentUser = userService.findByUsername(currentUsername);
+        User currentUser = userService.getCurrentUser();
 
         Project project = projectMapper.toEntity(request);
 
@@ -58,7 +56,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectResponse> getProjectsByOwner() {
-        List<Project> list = projectRepository.findAll();
-        return List.of();
+        User currentUser = userService.getCurrentUser();
+        List<Project> list = projectRepository.findProjectsByUserAndRole(currentUser,
+                ProjectRole.OWNER);
+        return list.stream().map(projectMapper::toResponse).toList();
     }
 }
