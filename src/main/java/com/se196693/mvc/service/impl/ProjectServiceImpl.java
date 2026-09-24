@@ -3,7 +3,15 @@ package com.se196693.mvc.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.se196693.mvc.dto.request.ProjectFilterRequest;
+import com.se196693.mvc.dto.request.ProjectUpdateRequest;
 import com.se196693.mvc.service.UserService;
+import com.se196693.mvc.specification.ProjectSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -55,10 +63,50 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectResponse> getProjectsByOwner() {
+    public Page<ProjectResponse> getMyProjects(ProjectFilterRequest request, int page, int size) {
         User currentUser = userService.getCurrentUser();
-        List<Project> list = projectRepository.findProjectsByUserAndRole(currentUser,
-                ProjectRole.OWNER);
-        return list.stream().map(projectMapper::toResponse).toList();
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by( "createdAt").descending());
+
+        Specification<Project> spec = Specification.where(ProjectSpecification.isNotDeleted())
+                .and(ProjectSpecification.containsUserWithRole(currentUser, request.getRole()))
+                .and(ProjectSpecification.hasKeyword(request.getKeyword()));
+
+        Page<Project> projectPage = projectRepository.findAll(spec, pageable);
+
+        return projectPage.map(projectMapper::toResponse);
+    }
+
+    @Override
+    public ProjectResponse getProjectByIdAndUser(Long id) {
+        Project foundProject = projectRepository.findProjectByIdAndUserAndRole(id,
+                userService.getCurrentUser(), ProjectRole.OWNER).orElseThrow(
+                () -> new ResourceNotFoundException("Project not found with id: " + id)
+        );
+        return projectMapper.toResponse(foundProject);
+    }
+
+    @Override
+    public ProjectResponse updatedProject(Long id, ProjectUpdateRequest request) {
+
+        Project foundProject = projectRepository.findProjectByIdAndUserAndRole(id,
+                userService.getCurrentUser(), ProjectRole.OWNER).orElseThrow(
+                () -> new ResourceNotFoundException("Project not found with id: " + id)
+        );
+        foundProject.setName(request.getName());
+        foundProject.setDescription(request.getDescription());
+        projectRepository.save(foundProject);
+        return projectMapper.toResponse(foundProject);
+    }
+
+    @Override
+    public void deletedProject(Long id) {
+        Project foundProject = projectRepository.findProjectByIdAndUserAndRole(id,
+                userService.getCurrentUser(), ProjectRole.OWNER).orElseThrow(
+                () -> new ResourceNotFoundException("Project not found with id: " + id)
+        );
+
+        foundProject.setDeleted(true);
+        projectRepository.save(foundProject);
     }
 }

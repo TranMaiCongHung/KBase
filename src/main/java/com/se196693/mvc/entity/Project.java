@@ -41,6 +41,9 @@ public class Project {
     @DateTimeFormat(pattern = "dd/mm/yyyy")
     private LocalDateTime updatedAt;
 
+    @Column
+    private boolean isDeleted;
+
     @Builder.Default
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<ProjectMember> projectMembers = new ArrayList<>();

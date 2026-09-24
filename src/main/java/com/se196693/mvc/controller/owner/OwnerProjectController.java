@@ -1,6 +1,7 @@
 package com.se196693.mvc.controller.owner;
 
 import com.se196693.mvc.dto.request.ProjectCreateRequest;
+import com.se196693.mvc.dto.request.ProjectUpdateRequest;
 import com.se196693.mvc.dto.response.ApiResponse;
 import com.se196693.mvc.dto.response.ProjectResponse;
 import com.se196693.mvc.service.ProjectService;
@@ -30,12 +31,26 @@ public class OwnerProjectController {
         );
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<ProjectResponse>>> getProjects(){
+
+
+    @PutMapping("/id")
+    public ResponseEntity<ApiResponse<ProjectResponse>> updateProject(@RequestParam Long id,
+                                                                      @RequestBody ProjectUpdateRequest request){
         return ResponseEntity.ok(
                 ApiResponse.success(
-                        "Listed successfully",
-                        projectService.getProjectsByOwner()
+                        "Updated successfully",
+                        projectService.updatedProject(id,request)
+                )
+        );
+    }
+
+    @DeleteMapping("/id")
+    public ResponseEntity<ApiResponse<Void>> deleteProject(@RequestParam Long id){
+        projectService.deletedProject(id);
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Deleted successfully",
+                        null
                 )
         );
     }
