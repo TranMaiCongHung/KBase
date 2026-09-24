@@ -89,10 +89,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectResponse updatedProject(Long id, ProjectUpdateRequest request) {
 
-        Project foundProject = projectRepository.findProjectByIdAndUserAndRole(id,
-                userService.getCurrentUser(), ProjectRole.OWNER).orElseThrow(
-                () -> new ResourceNotFoundException("Project not found with id: " + id)
-        );
+        Project foundProject = findProjectByIdAndUserAndRole(id, userService.getCurrentUser(), ProjectRole.OWNER);
+
         foundProject.setName(request.getName());
         foundProject.setDescription(request.getDescription());
         projectRepository.save(foundProject);
@@ -101,12 +99,16 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deletedProject(Long id) {
-        Project foundProject = projectRepository.findProjectByIdAndUserAndRole(id,
-                userService.getCurrentUser(), ProjectRole.OWNER).orElseThrow(
-                () -> new ResourceNotFoundException("Project not found with id: " + id)
-        );
+        Project foundProject = findProjectByIdAndUserAndRole(id, userService.getCurrentUser(), ProjectRole.OWNER);
 
         foundProject.setDeleted(true);
         projectRepository.save(foundProject);
+    }
+
+    private Project findProjectByIdAndUserAndRole(Long id, User user, ProjectRole role) {
+        Project project = projectRepository.findProjectByIdAndUserAndRole(id, user, role).orElseThrow(
+                () -> new ResourceNotFoundException("Project not found with id: " + id)
+        );
+        return project;
     }
 }
