@@ -177,6 +177,13 @@ public class UserServiceImpl implements UserService {
         return findByUsername(currentUsername);
     }
 
+    @Override
+    public User getUserByEmail(String email) {
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) throw new ResourceNotFoundException("User is not found");
+        return user;
+    }
+
     public UserResponse convertToResponse(User user) {
         return new UserResponse(user.getId(), user.getFullName(), user.getUsername(), user.getEmail(), user.getRole(), user.getStatus());
     }

@@ -105,7 +105,15 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.save(foundProject);
     }
 
-    private Project findProjectByIdAndUserAndRole(Long id, User user, ProjectRole role) {
+    @Override
+    public Project findProjectById(Long id) {
+        Project project = projectRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Project not found with id: " + id)
+        );
+        return project;
+    }
+    @Override
+    public Project findProjectByIdAndUserAndRole(Long id, User user, ProjectRole role) {
         Project project = projectRepository.findProjectByIdAndUserAndRole(id, user, role).orElseThrow(
                 () -> new ResourceNotFoundException("Project not found with id: " + id)
         );

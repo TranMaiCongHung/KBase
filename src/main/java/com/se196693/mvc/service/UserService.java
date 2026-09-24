@@ -24,4 +24,6 @@ public interface UserService {
     User processGoogleUser(OAuth2User oauth2User);
 
     User getCurrentUser();
+
+    User getUserByEmail(String email);
 }

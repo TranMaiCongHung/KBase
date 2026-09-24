@@ -12,7 +12,7 @@ import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "project_member")
-public class    ProjectMember {
+public class ProjectMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,4 +28,10 @@ public class    ProjectMember {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id")
     private Project project;
+
+    public ProjectMember(ProjectRole projectRole, User user, Project project) {
+        this.projectRole = projectRole;
+        this.user = user;
+        this.project = project;
+    }
 }

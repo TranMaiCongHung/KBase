@@ -1,9 +1,12 @@
 package com.se196693.mvc.controller.owner;
 
 import com.se196693.mvc.dto.request.ProjectCreateRequest;
+import com.se196693.mvc.dto.request.ProjectMemberRequest;
 import com.se196693.mvc.dto.request.ProjectUpdateRequest;
 import com.se196693.mvc.dto.response.ApiResponse;
+import com.se196693.mvc.dto.response.ProjectMemberResponse;
 import com.se196693.mvc.dto.response.ProjectResponse;
+import com.se196693.mvc.service.ProjectMemberService;
 import com.se196693.mvc.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -21,6 +24,8 @@ import java.util.List;
 public class OwnerProjectController {
     private final ProjectService projectService;
 
+    private final ProjectMemberService projectMemberService;
+
     @PostMapping
     public ResponseEntity<ApiResponse<ProjectResponse>> createProject(@RequestBody ProjectCreateRequest request){
         return ResponseEntity.status(HttpStatus.CREATED).body(
@@ -34,7 +39,7 @@ public class OwnerProjectController {
 
 
     @PutMapping("/id")
-    public ResponseEntity<ApiResponse<ProjectResponse>> updateProject(@RequestParam Long id,
+    public ResponseEntity<ApiResponse<ProjectResponse>> updateProject(@PathVariable Long id,
                                                                       @RequestBody ProjectUpdateRequest request){
         return ResponseEntity.ok(
                 ApiResponse.success(
@@ -45,12 +50,25 @@ public class OwnerProjectController {
     }
 
     @DeleteMapping("/id")
-    public ResponseEntity<ApiResponse<Void>> deleteProject(@RequestParam Long id){
+    public ResponseEntity<ApiResponse<Void>> deleteProject(@PathVariable Long id){
         projectService.deletedProject(id);
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "Deleted successfully",
                         null
+                )
+        );
+    }
+
+    @PostMapping("/{id}/members")
+    public ResponseEntity<ApiResponse<ProjectMemberResponse>> addMemberToProject(
+            @PathVariable Long id,
+            @RequestBody ProjectMemberRequest request) {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Added member successfully",
+                        projectMemberService.addMemberToProject(id, request)
                 )
         );
     }
