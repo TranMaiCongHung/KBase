@@ -8,7 +8,9 @@ import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Builder// Builder Pattern, giúp khoi tao object ro rang, kh cần quan tâm đến thứ tự truyền
@@ -50,4 +52,8 @@ public class User {
 
     @Column(name = "provider_id")
     private String providerId;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ProjectMember> projectMembers = new ArrayList<>();
 }

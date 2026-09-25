@@ -36,4 +36,6 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
             String providerId
     );
 
+    User findUserByEmail(String email);
+
 }
