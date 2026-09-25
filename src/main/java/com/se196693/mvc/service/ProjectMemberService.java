@@ -5,4 +5,6 @@ import com.se196693.mvc.dto.response.ProjectMemberResponse;
 
 public interface ProjectMemberService {
     ProjectMemberResponse addMemberToProject(Long id, ProjectMemberRequest request);
+
+    void removeMemberFromProject(Long projectId, Long userId);
 }

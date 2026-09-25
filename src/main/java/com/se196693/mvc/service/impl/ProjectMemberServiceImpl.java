@@ -7,12 +7,15 @@ import com.se196693.mvc.entity.ProjectMember;
 import com.se196693.mvc.entity.User;
 import com.se196693.mvc.enums.ProjectRole;
 import com.se196693.mvc.exception.DuplicateResourceException;
+import com.se196693.mvc.exception.InvalidCredentialsException;
+import com.se196693.mvc.exception.ResourceNotFoundException;
 import com.se196693.mvc.mapper.ProjectMemberMapper;
 import com.se196693.mvc.repository.ProjectMemberRepository;
 import com.se196693.mvc.service.ProjectMemberService;
 import com.se196693.mvc.service.ProjectService;
 import com.se196693.mvc.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,5 +48,19 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         return projectMemberMapper.toResponse(projectMember);
     }
 
+    @Override
+    public void removeMemberFromProject(Long projectId, Long userId) {
+        User currentUser = userService.getCurrentUser();
+        Project project = projectService.findProjectByIdAndUserAndRole(projectId, currentUser, ProjectRole.OWNER);
+        ProjectMember memberToRemove = projectMemberRepository.findByProjectIdAndUserId(projectId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Member not found in project"));
+        if (memberToRemove.getProjectRole().equals(ProjectRole.OWNER)) {
+            int countOwnerRole = projectMemberRepository.countByProjectIdAndProjectRole(projectId, ProjectRole.OWNER);
+            if (countOwnerRole <= 1) {
+                throw new IllegalArgumentException("Cannot remove the last owner of the project");
+            }
+        }
+        projectMemberRepository.delete(memberToRemove);
+    }
 
 }

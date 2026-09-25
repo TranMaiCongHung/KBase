@@ -1,6 +1,23 @@
 package com.se196693.mvc.service.impl;
 
-import com.se196693.mvc.dto.request.*;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Service;
+
+import com.se196693.mvc.dto.request.BaseUpdateUserRequest;
+import com.se196693.mvc.dto.request.RegisterRequest;
+import com.se196693.mvc.dto.request.UserCreationRequest;
+import com.se196693.mvc.dto.request.UserFilterRequest;
+import com.se196693.mvc.dto.request.UserRequest;
 import com.se196693.mvc.dto.response.PageResponse;
 import com.se196693.mvc.dto.response.UserResponse;
 import com.se196693.mvc.entity.User;
@@ -12,19 +29,8 @@ import com.se196693.mvc.exception.ResourceNotFoundException;
 import com.se196693.mvc.repository.UserRepository;
 import com.se196693.mvc.service.UserService;
 import com.se196693.mvc.specification.UserSpecification;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -78,11 +84,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(
+    public User findUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public UserResponse getUser(Long id) {
+        User user = findUserById(id);
         return convertToResponse(user);
     }
+
 
     @Override
     public UserResponse viewMyProfile(String username) {
@@ -180,7 +192,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByEmail(String email) {
         User user = userRepository.findUserByEmail(email);
-        if (user == null) throw new ResourceNotFoundException("User is not found");
+        if (user == null) {
+            throw new ResourceNotFoundException("User is not found");
+        }
         return user;
     }
 
