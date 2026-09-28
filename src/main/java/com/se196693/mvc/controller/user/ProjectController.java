@@ -26,7 +26,7 @@ public class ProjectController {
     private final ProjectMemberService projectMemberService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ProjectResponse>> createProject(@RequestBody ProjectCreateRequest request){
+    public ResponseEntity<ApiResponse<ProjectResponse>> createProject(@RequestBody ProjectCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ApiResponse.success(
                         "Created successfully",
@@ -73,7 +73,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProjectResponse>> getProjectByIdAndUser(@RequestParam Long id) {
+    public ResponseEntity<ApiResponse<ProjectResponse>> getProjectByIdAndUser(@PathVariable Long id) {
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "Fetch successfully",
