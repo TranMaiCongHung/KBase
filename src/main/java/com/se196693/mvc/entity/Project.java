@@ -42,9 +42,12 @@ public class Project {
     private LocalDateTime updatedAt;
 
     @Column
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     @Builder.Default
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<ProjectMember> projectMembers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<Folder> folders = new ArrayList<>();
 }

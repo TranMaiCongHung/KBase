@@ -101,7 +101,7 @@ public class ProjectServiceImpl implements ProjectService {
     public void deletedProject(Long id) {
         Project foundProject = findProjectByIdAndUserAndRole(id, userService.getCurrentUser(), ProjectRole.OWNER);
 
-        foundProject.setDeleted(true);
+        foundProject.setIsDeleted(true);
         projectRepository.save(foundProject);
     }
 
