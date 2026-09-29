@@ -26,4 +26,11 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
     Optional<Project> findProjectByIdAndUserAndRole(@Param("id") Long id,
                                             @Param("user") User user,
                                                     @Param("role")ProjectRole role);
+
+    @Query("SELECT p FROM Project p JOIN p.projectMembers pm" +
+            " WHERE pm.user = :user AND p.id = :id" +
+            " AND (p.isDeleted IS NULL OR p.isDeleted = false)")
+    Optional<Project> findProjectByIdAndUser(@Param("id") Long id,
+                                             @Param("user") User user);
+
 }

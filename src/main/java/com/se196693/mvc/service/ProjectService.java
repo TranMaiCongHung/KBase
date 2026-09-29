@@ -23,4 +23,6 @@ public interface ProjectService {
     void deletedProject(Long id);
     Project findProjectById(Long id);
     Project findProjectByIdAndUserAndRole(Long id, User user, ProjectRole role);
+    Project findProjectByIdAndUser(Long id, User user);
+
 }

@@ -79,10 +79,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse getProjectByIdAndUser(Long id) {
-        Project foundProject = projectRepository.findProjectByIdAndUserAndRole(id,
-                userService.getCurrentUser(), ProjectRole.OWNER).orElseThrow(
-                () -> new ResourceNotFoundException("Project not found with id: " + id)
-        );
+        User currentUser = userService.getCurrentUser();
+
+        Project foundProject = findProjectByIdAndUser(id, currentUser);
         return projectMapper.toResponse(foundProject);
     }
 
@@ -118,5 +117,12 @@ public class ProjectServiceImpl implements ProjectService {
                 () -> new ResourceNotFoundException("Project not found with id: " + id)
         );
         return project;
+    }
+
+    @Override
+    public Project findProjectByIdAndUser(Long id, User user) {
+        return projectRepository.findProjectByIdAndUser(id, user).orElseThrow(
+                () -> new ResourceNotFoundException("Project not found or you don't have access to this project with id: " + id)
+        );
     }
 }

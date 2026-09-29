@@ -48,26 +48,13 @@ public class ProjectController {
         );
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteProject(@PathVariable Long id){
         projectService.deletedProject(id);
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "Deleted successfully",
                         null
-                )
-        );
-    }
-
-    @PostMapping("/{id}/members")
-    public ResponseEntity<ApiResponse<ProjectMemberResponse>> addMemberToProject(
-            @PathVariable Long id,
-            @RequestBody ProjectMemberRequest request) {
-
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        "Added member successfully",
-                        projectMemberService.addMemberToProject(id, request)
                 )
         );
     }
