@@ -32,4 +32,9 @@ public interface UserService {
 
     User getUserByEmail(String email);
     User findUserById(Long id);
+
+    void deleteUser(Long id);
+
+    void deleteMyAccount();
+
 }

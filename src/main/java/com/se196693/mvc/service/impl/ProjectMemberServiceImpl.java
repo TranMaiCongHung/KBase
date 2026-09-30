@@ -1,5 +1,9 @@
 package com.se196693.mvc.service.impl;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.se196693.mvc.dto.request.ProjectMemberRequest;
 import com.se196693.mvc.dto.response.ProjectMemberResponse;
 import com.se196693.mvc.entity.Project;
@@ -13,10 +17,8 @@ import com.se196693.mvc.repository.ProjectMemberRepository;
 import com.se196693.mvc.service.ProjectMemberService;
 import com.se196693.mvc.service.ProjectService;
 import com.se196693.mvc.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -98,7 +100,5 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
             throw new IllegalArgumentException("You do not have permission to view this project");
         }
     }
-
-
 
 }

@@ -40,5 +40,17 @@ public class UserController {
         );
     }
 
+    @DeleteMapping("/me")
+    public ResponseEntity<ApiResponse<Void>> deleteMyAccount() {
+        userService.deleteMyAccount();
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Deleted account successfully",
+                        null
+                )
+        );
+    }
+
+
 
 }

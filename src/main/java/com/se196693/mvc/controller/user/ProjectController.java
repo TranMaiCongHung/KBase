@@ -70,9 +70,9 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<ProjectResponse>>> getProjects(ProjectFilterRequest request,
-                                                                          @ParameterObject @RequestParam(defaultValue = "0") int page,
-                                                                          @ParameterObject @RequestParam(defaultValue = "10") int size){
+    public ResponseEntity<ApiResponse<Page<ProjectResponse>>> getProjects(@ParameterObject ProjectFilterRequest request,
+                                                                           @RequestParam(defaultValue = "0") int page,
+                                                                           @RequestParam(defaultValue = "10") int size){
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "Listed successfully",

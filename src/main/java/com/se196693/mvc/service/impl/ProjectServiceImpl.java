@@ -125,4 +125,24 @@ public class ProjectServiceImpl implements ProjectService {
                 () -> new ResourceNotFoundException("Project not found or you don't have access to this project with id: " + id)
         );
     }
+    @Override
+    public Page<ProjectResponse> getAllProjectsForAdmin(ProjectFilterRequest request, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Specification<Project> spec = Specification.where(ProjectSpecification.isNotDeleted())
+                .and(ProjectSpecification.hasKeyword(request.getKeyword()));
+
+        Page<Project> projectPage = projectRepository.findAll(spec, pageable);
+
+        return projectPage.map(projectMapper::toResponse);
+    }
+
+    @Override
+    @Transactional
+    public void deleteProjectForAdmin(Long id) {
+        Project foundProject = findProjectById(id);
+        foundProject.setIsDeleted(true);
+        projectRepository.save(foundProject);
+    }
+
 }

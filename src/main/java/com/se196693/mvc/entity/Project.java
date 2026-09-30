@@ -42,7 +42,8 @@ public class Project {
     private LocalDateTime updatedAt;
 
     @Column
-    private Boolean isDeleted;
+    @Builder.Default
+    private Boolean isDeleted = false;
 
     @Builder.Default
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
