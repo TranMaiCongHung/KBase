@@ -23,4 +23,9 @@ public interface ProjectService {
     void deletedProject(Long id);
     Project findProjectById(Long id);
     Project findProjectByIdAndUserAndRole(Long id, User user, ProjectRole role);
+    Project findProjectByIdAndUser(Long id, User user);
+    Page<ProjectResponse> getAllProjectsForAdmin(ProjectFilterRequest request, int page, int size);
+
+    void deleteProjectForAdmin(Long id);
+
 }

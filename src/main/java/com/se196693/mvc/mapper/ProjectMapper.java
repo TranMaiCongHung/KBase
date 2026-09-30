@@ -12,11 +12,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ProjectMapper {
 
-    // MapStruct tự động nối tên trùng khớp
     Project toEntity(ProjectCreateRequest request);
 
-    // MapStruct tự động hiểu là phải lấy project.getProjectMembers()
-    // và gọi hàm toMemberResponse bên dưới để map cái List đó cho bạn!
+    @Mapping(source = "projectMembers", target = "members")
     ProjectResponse toResponse(Project project);
 
     @Mapping(source = "user.id", target = "userId")

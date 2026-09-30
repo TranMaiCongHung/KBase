@@ -79,10 +79,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse getProjectByIdAndUser(Long id) {
-        Project foundProject = projectRepository.findProjectByIdAndUserAndRole(id,
-                userService.getCurrentUser(), ProjectRole.OWNER).orElseThrow(
-                () -> new ResourceNotFoundException("Project not found with id: " + id)
-        );
+        User currentUser = userService.getCurrentUser();
+
+        Project foundProject = findProjectByIdAndUser(id, currentUser);
         return projectMapper.toResponse(foundProject);
     }
 
@@ -119,4 +118,31 @@ public class ProjectServiceImpl implements ProjectService {
         );
         return project;
     }
+
+    @Override
+    public Project findProjectByIdAndUser(Long id, User user) {
+        return projectRepository.findProjectByIdAndUser(id, user).orElseThrow(
+                () -> new ResourceNotFoundException("Project not found or you don't have access to this project with id: " + id)
+        );
+    }
+    @Override
+    public Page<ProjectResponse> getAllProjectsForAdmin(ProjectFilterRequest request, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Specification<Project> spec = Specification.where(ProjectSpecification.isNotDeleted())
+                .and(ProjectSpecification.hasKeyword(request.getKeyword()));
+
+        Page<Project> projectPage = projectRepository.findAll(spec, pageable);
+
+        return projectPage.map(projectMapper::toResponse);
+    }
+
+    @Override
+    @Transactional
+    public void deleteProjectForAdmin(Long id) {
+        Project foundProject = findProjectById(id);
+        foundProject.setIsDeleted(true);
+        projectRepository.save(foundProject);
+    }
+
 }

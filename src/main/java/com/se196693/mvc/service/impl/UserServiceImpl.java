@@ -31,6 +31,7 @@ import com.se196693.mvc.service.UserService;
 import com.se196693.mvc.specification.UserSpecification;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -88,6 +89,22 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("User not found"));
     }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long id) {
+        User user = findUserById(id);
+        user.setStatus(UserStatus.BLOCKED);
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMyAccount() {
+        User user = getCurrentUser();
+        userRepository.delete(user);
+    }
+
 
     @Override
     public UserResponse getUser(Long id) {
